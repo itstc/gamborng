@@ -1,10 +1,12 @@
 import React from 'react';
-import rocketLogo from './rocket.png';
+import { useAuthContext } from './hooks/useAuthContext';
+import { getUserAvatarUrl } from './utils/cdn';
 
 export default function App() {
-  return (<div>
-    <img src={rocketLogo} className="logo" alt="Discord" />
-    <h1>Hello, World!</h1>
-    ${JSON.stringify(import.meta.env)}
-  </div>);
+  const authContext = useAuthContext();
+  return (
+    <div>
+      <img src={getUserAvatarUrl(authContext)} className="logo" alt="User" />
+    </div>
+  );
 }
