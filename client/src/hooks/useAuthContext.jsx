@@ -10,6 +10,8 @@ const AuthContext = React.createContext({
 export function AuthContextProvider({ children }) {
   const authContext = useAuthContextSetup();
 
+  console.log(JSON.stringify(authContext));
+
   if (!authContext) {
     return <h1>Loading...</h1>;
   }
