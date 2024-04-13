@@ -1,5 +1,7 @@
 {
-  "ecmaVersion": "2020",
+  "parserOptions": {
+    "ecmaVersion": "latest"
+  },
   "extends": [
     "eslint:recommended",
     "plugin:react/recommended",
@@ -33,6 +35,7 @@
         "argsIgnorePattern": "^_"
       }
     ],
-    "react/react-in-jsx-scope": "off"
+    "react/react-in-jsx-scope": "off",
+    "react/prop-types": "off"
   }
 }
