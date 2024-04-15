@@ -1,16 +1,17 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { setupDiscordSdk } from '../utils/auth';
+import { setupGameState } from '../utils/game';
 
 const AuthContext = React.createContext({
   guildMember: null,
   accessToken: '',
   scopes: [],
+  client: undefined,
+  room: undefined,
 });
 
 export function AuthContextProvider({ children }) {
   const authContext = useAuthContextSetup();
-
-  console.log(JSON.stringify(authContext));
 
   if (!authContext) {
     return <h1>Loading...</h1>;
@@ -29,8 +30,12 @@ export function useAuthContextSetup() {
 
   useEffect(() => {
     if (!setup.current) {
-      setup.current = true;
-      setupDiscordSdk().then((result) => setAuth(result));
+      (async () => {
+        setup.current = true;
+        const playerAuth = await setupDiscordSdk();
+        const gameState = await setupGameState(playerAuth);
+        setAuth({ ...playerAuth, ...gameState });
+      })();
     }
   }, []);
 

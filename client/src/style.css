@@ -90,6 +90,13 @@ button:focus-visible {
 .container {
   display: flex;
   flex-direction: column;
+
+  gap: 32px;
+}
+
+.player-container {
+  display: flex;
+  gap: 16px;
 }
 
 .roll-panel {
@@ -107,6 +114,10 @@ button:focus-visible {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+}
+
+.roll-done {
+  background: radial-gradient(rgba(32, 32, 32, 0.2), rgba(0, 0, 0, 0.4));
 }
 
 .roll-text {
