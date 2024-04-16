@@ -1,4 +1,5 @@
-import {defineConfig} from 'vite';
+import path from 'path';
+import { defineConfig } from 'vite';
 import eslint from 'vite-plugin-eslint';
 
 // https://vitejs.dev/config/
@@ -17,5 +18,5 @@ export default defineConfig({
       clientPort: 443,
     },
   },
-  plugins: [eslint()]
+  plugins: [eslint()],
 });
