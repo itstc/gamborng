@@ -1,11 +1,8 @@
 import React, { useCallback, useState } from 'react';
 import { OrbitControls } from '@react-three/drei';
 
-import { Box } from './components/Box';
-
 import { useAuthContext } from './hooks/useAuthContext';
 
-import { RollPanel } from './RollPanel';
 import { usePlayers } from './hooks/usePlayers';
 
 import { Bob } from './components/Bob';
