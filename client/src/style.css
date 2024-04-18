@@ -92,6 +92,13 @@ button:focus-visible {
   flex-direction: column;
 
   gap: 32px;
+
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  width: 100vw;
+  height: 100vh;
 }
 
 .player-container {
