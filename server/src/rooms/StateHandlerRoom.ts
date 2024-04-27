@@ -8,10 +8,9 @@ export class StateHandlerRoom extends Room<State> {
   onCreate(options: IState) {
     this.setState(new State(options));
 
-    // Here's where we would add handlers for updating state
-    //this.onMessage('startTalking', (client, _data) => {
-    //  this.state.startTalking(client.sessionId);
-    //});
+    this.onMessage('entity_update', (client, _data) => {
+      this.broadcast('entity_update', { entity: client.sessionId, ..._data });
+    });
 
     //this.onMessage('stopTalking', (client, _data) => {
     //  this.state.stopTalking(client.sessionId);
