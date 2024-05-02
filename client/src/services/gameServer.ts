@@ -12,12 +12,13 @@ export class GameServerClient {
   client: Client;
   room?: Room;
 
-  clientId?: string;
+  clientId: string;
 
   eventQueue: IServerEvent[] = [];
 
   constructor() {
     this.client = new Client(GameServerClient.WS_ENDPOINT);
+    this.clientId = '';
   }
 
   async joinOrCreate(name: string, avatarUrl: string) {
@@ -33,6 +34,7 @@ export class GameServerClient {
     this.room.onMessage('*', (type, data) => {
       this.enqueue({ type: type as string, data });
     });
+    return this.room;
   }
 
   dequeue() {

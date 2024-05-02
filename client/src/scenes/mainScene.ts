@@ -1,21 +1,20 @@
 //import { ClosestRaycaster } from '@enable3d/ammo-physics';
-//import { ExtendedObject3D, FLAT, Scene3D } from '@enable3d/phaser-extension';
-import { Scene3D } from '@enable3d/phaser-extension';
+import { ExtendedObject3D, Scene3D } from '@enable3d/phaser-extension';
+import * as THREE from 'three';
+import { GLTF } from 'three/examples/jsm/loaders/GLTFLoader';
 import { GameServerClient } from '../services/gameServer';
-//import * as THREE from 'three';
-//import { EntityManager } from '../utils/entity';
-//import { GLTF } from 'three/examples/jsm/loaders/GLTFLoader';
+import { EntityManager } from '../utils/entity';
 //import { teleport } from '../utils/position';
 
 export default class MainScene extends Scene3D {
   //private ui: FLAT.FlatArea;
   //private keyMap: Record<string, Phaser.Input.Keyboard.Key>;
-  //private camera: THREE.Object3D;
+  private camera?: THREE.Object3D;
 
   //private bound: ExtendedObject3D;
-  //private entityManager: EntityManager;
+  private entityManager?: EntityManager;
 
-  //assets: Record<string, GLTF> = {};
+  assets: Record<string, GLTF> = {};
   serverClient: GameServerClient;
 
   constructor() {
@@ -29,21 +28,20 @@ export default class MainScene extends Scene3D {
 
   async init() {
     this.accessThirdDimension();
-    await this.serverClient.joinOrCreate('bob', 'assets/img/phaser-logo.png');
-    //this.entityManager = new EntityManager(this, this.serverClient.room, (player) => {
-    //  this.targetCameraToPlayer(player);
-    //  this.time.addEvent({
-    //    loop: true,
-    //    delay: 60,
-    //    callback: () => {
-    //      const player = this.entityManager.player;
-    //      this.serverClient.room.send('entity_update', {
-    //        rotation: player.rotation.toArray(),
-    //        position: player.position.toArray().map((val) => val.toFixed(2)),
-    //      });
-    //    },
-    //  });
-    //});
+    const room = await this.serverClient.joinOrCreate('bob', 'assets/img/phaser-logo.png');
+    this.entityManager = new EntityManager(this, room, (player) => {
+      this.targetCameraToPlayer(player);
+      this.time.addEvent({
+        loop: true,
+        delay: 60,
+        callback: () => {
+          room.send('entity_update', {
+            rotation: player.rotation.toArray(),
+            position: player.position.toArray().map((val) => val.toFixed(2)),
+          });
+        },
+      });
+    });
   }
 
   async create() {
@@ -67,15 +65,16 @@ export default class MainScene extends Scene3D {
 
     //this.keyMap = this.input.keyboard?.addKeys('W, S, A, D, SPACE') as any;
     //}
+  }
 
-    //targetCameraToPlayer(player: ExtendedObject3D) {
-    //if (this.third.camera) {
-    //  const followCam = new THREE.Object3D();
-    //  followCam.position.copy(new THREE.Vector3(0, 2, -7));
-    //  player.add(followCam);
+  targetCameraToPlayer(player: ExtendedObject3D) {
+    if (this.third.camera) {
+      const followCam = new THREE.Object3D();
+      followCam.position.copy(new THREE.Vector3(0, 2, -7));
+      player.add(followCam);
 
-    //  this.camera = followCam;
-    //}
+      this.camera = followCam;
+    }
   }
 
   update() {
