@@ -1,6 +1,6 @@
-import path from 'path';
 import { defineConfig } from 'vite';
 import eslint from 'vite-plugin-eslint';
+import viteTsConfigPaths from 'vite-tsconfig-paths';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -14,9 +14,6 @@ export default defineConfig({
         ws: true,
       },
     },
-    hmr: {
-      clientPort: 443,
-    },
   },
-  plugins: [eslint()],
+  plugins: [eslint(), viteTsConfigPaths()],
 });

@@ -1,14 +1,17 @@
 {
+  "root": true,
+  "parser": "@typescript-eslint/parser",
   "env": {
     "browser": true
   },
   "parserOptions": {
     "ecmaVersion": "latest"
   },
+  "plugins": ["@typescript-eslint"],
   "extends": [
     "eslint:recommended",
-    "plugin:react/recommended",
-    "plugin:react-hooks/recommended",
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:@typescript-eslint/recommended",
     "plugin:import/recommended",
     "eslint-config-prettier"
   ],
@@ -19,7 +22,7 @@
     "import/resolver": {
       "node": {
         "paths": ["src"],
-        "extensions": [".js", ".jsx"]
+        "extensions": [".js", ".ts"]
       }
     }
   },
@@ -32,9 +35,6 @@
         "ignoreRestSiblings": true,
         "argsIgnorePattern": "^_"
       }
-    ],
-    "react/react-in-jsx-scope": "off",
-    "react/prop-types": "off",
-    "react/no-unknown-property": "off"
+    ]
   }
 }

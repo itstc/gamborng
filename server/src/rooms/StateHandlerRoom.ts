@@ -9,12 +9,8 @@ export class StateHandlerRoom extends Room<State> {
     this.setState(new State(options));
 
     this.onMessage('entity_update', (client, _data) => {
-      this.broadcast('entity_update', { entity: client.sessionId, ..._data });
+      this.broadcast('entity_update', { entity: client.sessionId, ..._data }, { except: client });
     });
-
-    //this.onMessage('stopTalking', (client, _data) => {
-    //  this.state.stopTalking(client.sessionId);
-    //});
   }
 
   onAuth(_client: any, _options: any, _req: any) {
