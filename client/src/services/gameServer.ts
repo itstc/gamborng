@@ -1,5 +1,5 @@
 import { Client, Room } from 'colyseus.js';
-import { generateUUID } from 'three/src/math/MathUtils';
+import { MathUtils } from 'three';
 
 interface IServerEvent {
   type: string;
@@ -7,7 +7,7 @@ interface IServerEvent {
 }
 
 export class GameServerClient {
-  static WS_ENDPOINT = `wss://${location.host}/api/colyseus`;
+  static WS_ENDPOINT = `ws://${location.host}/api/colyseus`;
 
   client: Client;
   room?: Room;
@@ -22,7 +22,7 @@ export class GameServerClient {
   }
 
   async joinOrCreate(name: string, avatarUrl: string) {
-    this.clientId = generateUUID();
+    this.clientId = MathUtils.generateUUID();
     this.room = await this.client.joinOrCreate('rng_room', {
       channelId: '123',
       roomName: 'test',

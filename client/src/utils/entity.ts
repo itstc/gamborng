@@ -70,8 +70,8 @@ export class EntityManager {
     }
 
     // register event listeners when players change
-    this.room.state.players.onAdd = this.addEntity.bind(this);
-    this.room.state.players.onRemove = this.removeEntity.bind(this);
+    this.room.state.players.onAdd(this.addEntity.bind(this));
+    this.room.state.players.onRemove(this.removeEntity.bind(this));
   }
 
   private addEntity(newPlayer: any) {

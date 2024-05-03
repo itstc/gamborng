@@ -1,17 +1,17 @@
-//import { ClosestRaycaster } from '@enable3d/ammo-physics';
-import { ExtendedObject3D, Scene3D } from '@enable3d/phaser-extension';
+import { ClosestRaycaster } from '@enable3d/ammo-physics';
+import { ExtendedObject3D, Scene3D, FLAT } from '@enable3d/phaser-extension';
 import * as THREE from 'three';
-import { GLTF } from 'three/examples/jsm/loaders/GLTFLoader';
+import { GLTF } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { GameServerClient } from '../services/gameServer';
 import { EntityManager } from '../utils/entity';
-//import { teleport } from '../utils/position';
+import { teleport } from '../utils/position';
 
 export default class MainScene extends Scene3D {
-  //private ui: FLAT.FlatArea;
-  //private keyMap: Record<string, Phaser.Input.Keyboard.Key>;
+  private ui?: FLAT.FlatArea;
+  private keyMap?: Record<string, Phaser.Input.Keyboard.Key>;
   private camera?: THREE.Object3D;
 
-  //private bound: ExtendedObject3D;
+  private bound?: ExtendedObject3D;
   private entityManager?: EntityManager;
 
   assets: Record<string, GLTF> = {};
@@ -48,23 +48,22 @@ export default class MainScene extends Scene3D {
     // creates a nice scene
     await this.third.warpSpeed('-orbitControls');
 
-    //this.ui = FLAT.init(this.third.renderer);
+    this.ui = FLAT.init(this.third.renderer);
 
-    //this.bound = this.third.add.ground(
-    //  { width: 1000, height: 1000 },
-    //  {
-    //    standard: {
-    //      color: '#000',
-    //    },
-    //  },
-    //);
-    //this.bound.position.set(0, -30, 0);
-    //this.third.physics.add.existing(this.bound, { collisionFlags: 1 });
+    this.bound = this.third.add.ground(
+      { width: 1000, height: 1000 },
+      {
+        standard: {
+          color: '#000',
+        },
+      },
+    );
+    this.bound.position.set(0, -30, 0);
+    this.third.physics.add.existing(this.bound, { collisionFlags: 1 });
 
-    //this.assets.bob = await this.third.load.gltf('assets/Bob.glb');
+    this.assets.bob = await this.third.load.gltf('/models/Bob.glb');
 
-    //this.keyMap = this.input.keyboard?.addKeys('W, S, A, D, SPACE') as any;
-    //}
+    this.keyMap = this.input.keyboard?.addKeys('W, S, A, D, SPACE') as any;
   }
 
   targetCameraToPlayer(player: ExtendedObject3D) {
@@ -78,52 +77,52 @@ export default class MainScene extends Scene3D {
   }
 
   update() {
-    //if (!this.entityManager?.player || !this.camera) {
-    //  return;
-    //}
-    //const SPEED = 3;
-    //const player = this.entityManager.player;
-    //const pos = player.position.clone();
-    //// point camera to player position
-    //this.third.camera.position.lerp(this.camera.getWorldPosition(new THREE.Vector3()), 0.05);
-    //this.third.camera.lookAt(pos.x, pos.y + 2, pos.z);
-    //// process server events
-    //const event: any = this.serverClient.dequeue();
-    //if (event && event.type === 'entity_update') {
-    //  const [rx, ry, rz] = event.data.rotation;
-    //  const [px, py, pz] = event.data.position;
-    //  this.entityManager.getEntity(event.data.entity)?.[0].rotation.set(rx, ry, rz);
-    //  this.entityManager.getEntity(event.data.entity)?.[0].position.set(px, py, pz);
-    //}
-    //// capture player movement
-    //if (this.keyMap.W.isDown || this.keyMap.S.isDown) {
-    //  const dir = this.keyMap.W.isDown ? 1 : -1;
-    //  const rotation = player.getWorldDirection(new THREE.Vector3()?.setFromEuler?.(player.rotation));
-    //  const theta = Math.atan2(rotation.x, rotation.z);
-    //  const x = Math.sin(theta) * dir * SPEED,
-    //    y = player.body.velocity.y,
-    //    z = Math.cos(theta) * dir * SPEED;
-    //  player.body.setVelocity(x, y, z);
-    //}
-    //if (this.keyMap.A.isDown) {
-    //  player.body.setAngularVelocityY(SPEED);
-    //} else if (this.keyMap.D.isDown) {
-    //  player.body.setAngularVelocityY(-SPEED);
-    //} else {
-    //  player.body.setAngularVelocityY(0);
-    //}
-    //const playerPos = player.body.position;
-    //const jumpRay = this.third.physics.add.raycaster('closest') as ClosestRaycaster;
-    //jumpRay.setRayFromWorld(playerPos.x, playerPos.y, playerPos.z);
-    //jumpRay.setRayToWorld(playerPos.x, playerPos.y - 0.5, playerPos.z);
-    //jumpRay.rayTest();
-    //if (this.keyMap.SPACE.isDown && jumpRay.hasHit()) {
-    //  this.keyMap.SPACE.isDown = false;
-    //  player.body.applyForceY(4);
-    //}
-    //if (jumpRay.hasHit() && jumpRay.getCollisionObject() === this.bound) {
-    //  teleport(player, [0, 0, 0]);
-    //}
-    //jumpRay.destroy();
+    if (!this.entityManager?.player || !this.camera) {
+      return;
+    }
+    const SPEED = 3;
+    const player = this.entityManager.player;
+    const pos = player.position.clone();
+    // point camera to player position
+    this.third.camera.position.lerp(this.camera.getWorldPosition(new THREE.Vector3()), 0.05);
+    this.third.camera.lookAt(pos.x, pos.y + 2, pos.z);
+    // process server events
+    const event: any = this.serverClient.dequeue();
+    if (event && event.type === 'entity_update') {
+      const [rx, ry, rz] = event.data.rotation;
+      const [px, py, pz] = event.data.position;
+      this.entityManager.getEntity(event.data.entity)?.[0].rotation.set(rx, ry, rz);
+      this.entityManager.getEntity(event.data.entity)?.[0].position.set(px, py, pz);
+    }
+    // capture player movement
+    if (this.keyMap?.W.isDown || this.keyMap?.S.isDown) {
+      const dir = this.keyMap.W.isDown ? 1 : -1;
+      const rotation = player.getWorldDirection(new THREE.Vector3()?.setFromEuler?.(player.rotation));
+      const theta = Math.atan2(rotation.x, rotation.z);
+      const x = Math.sin(theta) * dir * SPEED,
+        y = player.body.velocity.y,
+        z = Math.cos(theta) * dir * SPEED;
+      player.body.setVelocity(x, y, z);
+    }
+    if (this.keyMap?.A.isDown) {
+      player.body.setAngularVelocityY(SPEED);
+    } else if (this.keyMap?.D.isDown) {
+      player.body.setAngularVelocityY(-SPEED);
+    } else {
+      player.body.setAngularVelocityY(0);
+    }
+    const playerPos = player.body.position;
+    const jumpRay = this.third.physics.add.raycaster('closest') as ClosestRaycaster;
+    jumpRay.setRayFromWorld(playerPos.x, playerPos.y, playerPos.z);
+    jumpRay.setRayToWorld(playerPos.x, playerPos.y - 0.5, playerPos.z);
+    jumpRay.rayTest();
+    if (this.keyMap?.SPACE.isDown && jumpRay.hasHit()) {
+      this.keyMap.SPACE.isDown = false;
+      player.body.applyForceY(4);
+    }
+    if (jumpRay.hasHit() && jumpRay.getCollisionObject() === this.bound) {
+      teleport(player, [0, 0, 0]);
+    }
+    jumpRay.destroy();
   }
 }
