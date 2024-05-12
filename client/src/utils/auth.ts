@@ -1,5 +1,7 @@
 import { sdkClient } from '../discordSdk';
 
+export type DiscordUserContext = Awaited<ReturnType<typeof setupDiscordSdk>>;
+
 export async function setupDiscordSdk() {
   await sdkClient.ready();
 

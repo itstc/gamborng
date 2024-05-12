@@ -5,6 +5,10 @@ import { GLTF } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { GameServerClient } from '../services/gameServer';
 import { EntityManager } from '../utils/entity';
 import { teleport } from '../utils/position';
+import { DiscordUserContext } from '../utils/auth';
+import { getUserAvatarUrl, getUserDisplayName } from '../utils/user';
+
+let userContext: DiscordUserContext;
 
 export default class MainScene extends Scene3D {
   private ui?: FLAT.FlatArea;
@@ -23,12 +27,15 @@ export default class MainScene extends Scene3D {
   }
 
   async preload() {
-    await this.third.load.preload('bob', '/models/Bob.glb');
+    await this.third.load.preload('bob', `/models/Bob.glb`);
   }
 
   async init() {
     this.accessThirdDimension();
-    const room = await this.serverClient.joinOrCreate('bob', 'assets/img/phaser-logo.png');
+    const room = await this.serverClient.joinOrCreate(
+      getUserDisplayName(window.userContext),
+      getUserAvatarUrl(window.userContext),
+    );
     this.entityManager = new EntityManager(this, room, (player) => {
       this.targetCameraToPlayer(player);
       this.time.addEvent({

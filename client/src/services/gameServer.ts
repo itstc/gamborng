@@ -7,7 +7,7 @@ interface IServerEvent {
 }
 
 export class GameServerClient {
-  static WS_ENDPOINT = `ws://${location.host}/api/colyseus`;
+  static WS_ENDPOINT = `wss://${location.host}/api/colyseus`;
 
   client: Client;
   room?: Room;

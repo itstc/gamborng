@@ -1,6 +1,11 @@
 import { sdkClient } from '../discordSdk';
+import { DiscordUserContext } from './auth';
 
-export function getUserAvatarUrl({ guildMember, user }, cdn = 'https://cdn.discordapp.com', size = 256) {
+export function getUserAvatarUrl(
+  { guildMember, user }: DiscordUserContext,
+  cdn = 'https://cdn.discordapp.com',
+  size = 256,
+) {
   if (guildMember?.avatar != null && sdkClient.guildId != null) {
     return `${cdn}/guilds/${sdkClient.guildId}/users/${user.id}/avatars/${guildMember.avatar}.png?size=${size}`;
   }
@@ -12,7 +17,7 @@ export function getUserAvatarUrl({ guildMember, user }, cdn = 'https://cdn.disco
   return `${cdn}/embed/avatars/${defaultAvatarIndex}.png?size=${size}`;
 }
 
-export function getUserDisplayName({ guildMember, user }) {
+export function getUserDisplayName({ guildMember, user }: DiscordUserContext) {
   if (guildMember?.nick != null && guildMember.nick !== '') return guildMember.nick;
 
   if (user.discriminator !== '0') return `${user.username}#${user.discriminator}`;

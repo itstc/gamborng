@@ -75,9 +75,9 @@ export class EntityManager {
   }
 
   private addEntity(newPlayer: any) {
-    const { sessionId, userId } = newPlayer as PlayerData;
+    const { sessionId, userId, name } = newPlayer as PlayerData;
     const isHost = userId === this.game.serverClient.clientId;
-    const entity = createPlayer(this.game, sessionId, isHost);
+    const entity = createPlayer(this.game, name, isHost);
     this.entities.set(sessionId, entity);
 
     if (isHost) {
