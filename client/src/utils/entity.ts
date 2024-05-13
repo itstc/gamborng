@@ -1,3 +1,4 @@
+import * as THREE from 'three';
 import { FLAT } from '@enable3d/phaser-extension';
 import { ExtendedObject3D } from '@enable3d/ammo-physics';
 import { Room } from 'colyseus.js';
@@ -7,10 +8,17 @@ import { PlayerData } from '../types';
 import MainScene from '../scenes/mainScene';
 import { getRandomPosition } from './position';
 
-export function createPlayer(gameState: MainScene, name: string, host = false): ExtendedObject3D {
+export function createPlayer(gameState: MainScene, playerData: PlayerData, host = false): ExtendedObject3D {
   const entity = new ExtendedObject3D();
-  entity.name = name;
-  entity.add(gameState.assets.bob.scene.clone());
+  entity.name = playerData.name;
+  const entityMesh = gameState.assets.bob.scene.clone();
+  const textureLoader = new THREE.TextureLoader();
+  const avatarTexture = textureLoader.load(playerData.avatarUrl);
+
+  // override material of the body mesh
+  (entityMesh.children[3] as THREE.Mesh).material = new THREE.MeshStandardMaterial({ map: avatarTexture });
+
+  entity.add(entityMesh);
 
   entity.rotateY(Math.PI + 0.1);
   entity.rotation.set(0, Math.PI * 1.5, 0);
@@ -39,7 +47,7 @@ export function createPlayer(gameState: MainScene, name: string, host = false): 
   }
 
   // add nametag
-  const texture = new FLAT.TextTexture(name);
+  const texture = new FLAT.TextTexture(playerData.name);
   const sprite3d = new FLAT.TextSprite(texture);
   entity.add(sprite3d);
   sprite3d.position.set(0, 2, 0);
@@ -75,9 +83,9 @@ export class EntityManager {
   }
 
   private addEntity(newPlayer: any) {
-    const { sessionId, userId, name } = newPlayer as PlayerData;
+    const { sessionId, userId } = newPlayer as PlayerData;
     const isHost = userId === this.game.serverClient.clientId;
-    const entity = createPlayer(this.game, name, isHost);
+    const entity = createPlayer(this.game, newPlayer, isHost);
     this.entities.set(sessionId, entity);
 
     if (isHost) {

@@ -3,6 +3,7 @@ import { enable3d, Canvas } from '@enable3d/phaser-extension';
 import MainScene from './scenes/mainScene';
 import PreloadScene from './scenes/preloadScene';
 import { setupDiscordSdk } from './utils/auth';
+import { DiscordUserContextSingleton } from './discordSdk';
 
 const config: Phaser.Types.Core.GameConfig = {
   type: Phaser.WEBGL,
@@ -19,7 +20,7 @@ const config: Phaser.Types.Core.GameConfig = {
 
 window.addEventListener('load', () => {
   setupDiscordSdk().then((userContext) => {
-    window.userContext = userContext;
+    DiscordUserContextSingleton.setDiscordUserContext(userContext);
     enable3d(() => new Phaser.Game(config)).withPhysics('/ammo');
   });
 });

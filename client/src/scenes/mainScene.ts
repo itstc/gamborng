@@ -5,10 +5,8 @@ import { GLTF } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { GameServerClient } from '../services/gameServer';
 import { EntityManager } from '../utils/entity';
 import { teleport } from '../utils/position';
-import { DiscordUserContext } from '../utils/auth';
 import { getUserAvatarUrl, getUserDisplayName } from '../utils/user';
-
-let userContext: DiscordUserContext;
+import { DiscordUserContextSingleton } from '../discordSdk';
 
 export default class MainScene extends Scene3D {
   private ui?: FLAT.FlatArea;
@@ -31,11 +29,9 @@ export default class MainScene extends Scene3D {
   }
 
   async init() {
+    const userContext = DiscordUserContextSingleton.getDiscordUserContext();
     this.accessThirdDimension();
-    const room = await this.serverClient.joinOrCreate(
-      getUserDisplayName(window.userContext),
-      getUserAvatarUrl(window.userContext),
-    );
+    const room = await this.serverClient.joinOrCreate(getUserDisplayName(userContext), getUserAvatarUrl(userContext));
     this.entityManager = new EntityManager(this, room, (player) => {
       this.targetCameraToPlayer(player);
       this.time.addEvent({
